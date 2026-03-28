@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Header from './components/layout/Header';
 import PokemonCard from './components/layout/PokemonCard';
 import SearchInput from './components/layout/SearchInput';
@@ -6,12 +6,15 @@ import TypeFilter from './components/layout/TypeFilter';
 import usePokemonDetails from './features/pokemon/hooks/usePokemonDetails';
 import usePokemonList from './features/pokemon/hooks/usePokemonList';
 import usePokemonType from './features/pokemon/hooks/usePokemonType';
+import useDebounce from './hooks/useDebounce';
+import filterPokemon from './lib/filter-pokemon';
 import type { PokemonListItem } from './types/pokemon';
 
 function App() {
 	const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
 	const [search, setSearch] = useState<string>('');
-	const [debouncedSearch, setDebouncedSearch] = useState<string>('');
+	const debouncedSearch = useDebounce(search, 500);
+
 	const { data: pokemonList } = usePokemonList();
 	const names = pokemonList?.pages.flatMap(page =>
 		page.results.map((result: PokemonListItem) => result.name)
@@ -21,28 +24,17 @@ function App() {
 
 	const types = typesList?.results.map((type: { name: string }) => type.name);
 
-	const filteredPokemon = (pokemon ?? []).filter(p => {
-		const searchMatch = p.name
-			.toLowerCase()
-			.includes(debouncedSearch.toLowerCase());
-		const typeMatch =
-			selectedTypes.length === 0 ||
-			p.types.some(type => selectedTypes.includes(type.type.name));
-		return searchMatch && typeMatch;
-	});
+	const filteredPokemon = filterPokemon(
+		pokemon ?? [],
+		debouncedSearch,
+		selectedTypes
+	);
 
 	function handelToggleType(type: string) {
 		setSelectedTypes(prev =>
 			prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
 		);
 	}
-
-	useEffect(() => {
-		const debounce = setTimeout(() => {
-			setDebouncedSearch(search);
-		}, 500);
-		return () => clearTimeout(debounce);
-	}, [search]);
 
 	return (
 		<div className='min-h-screen'>
