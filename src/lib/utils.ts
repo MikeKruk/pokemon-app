@@ -1,6 +1,16 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+import { typeColors } from '../types/colors';
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+	return twMerge(clsx(inputs));
+}
+
+export function getCardBackground(types: string[]): string {
+	const primaryColor = typeColors[types[0]] ?? '#A8A77A';
+	const secondaryColor = typeColors[types[1]] ?? primaryColor;
+
+	return types.length > 1
+		? `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`
+		: primaryColor;
 }
