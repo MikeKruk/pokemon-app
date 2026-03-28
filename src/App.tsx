@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Header from './components/layout/Header';
 import PokemonCard from './components/layout/PokemonCard';
 import SearchInput from './components/layout/SearchInput';
@@ -11,6 +11,7 @@ import type { PokemonListItem } from './types/pokemon';
 function App() {
 	const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
 	const [search, setSearch] = useState<string>('');
+	const [debouncedSearch, setDebouncedSearch] = useState<string>('');
 	const { data: pokemonList } = usePokemonList();
 	const names = pokemonList?.pages.flatMap(page =>
 		page.results.map((result: PokemonListItem) => result.name)
@@ -21,7 +22,9 @@ function App() {
 	const types = typesList?.results.map((type: { name: string }) => type.name);
 
 	const filteredPokemon = (pokemon ?? []).filter(p => {
-		const searchMatch = p.name.toLowerCase().includes(search.toLowerCase());
+		const searchMatch = p.name
+			.toLowerCase()
+			.includes(debouncedSearch.toLowerCase());
 		const typeMatch =
 			selectedTypes.length === 0 ||
 			p.types.some(type => selectedTypes.includes(type.type.name));
@@ -33,6 +36,13 @@ function App() {
 			prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
 		);
 	}
+
+	useEffect(() => {
+		const debounce = setTimeout(() => {
+			setDebouncedSearch(search);
+		}, 500);
+		return () => clearTimeout(debounce);
+	}, [search]);
 
 	return (
 		<div className='min-h-screen'>
