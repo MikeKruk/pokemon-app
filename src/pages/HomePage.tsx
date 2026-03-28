@@ -1,0 +1,83 @@
+import useFavorites from '@/hooks/useFavorites';
+import { useState } from 'react';
+import LoadMoreBtn from '../components/layout/LoadMoreBtn';
+import PokemonCard from '../components/layout/PokemonCard';
+import PokemonModal from '../components/layout/PokemonModal';
+import SearchInput from '../components/layout/SearchInput';
+import TypeFilter from '../components/layout/TypeFilter';
+import usePokemonDetails from '../features/pokemon/hooks/usePokemonDetails';
+import usePokemonList from '../features/pokemon/hooks/usePokemonList';
+import usePokemonType from '../features/pokemon/hooks/usePokemonType';
+import useDebounce from '../hooks/useDebounce';
+import filterPokemon from '../lib/filter-pokemon';
+import type { Pokemon, PokemonListItem } from '../types/pokemon';
+
+export default function HomePage() {
+	const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+	const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null);
+	const [search, setSearch] = useState<string>('');
+	const debouncedSearch = useDebounce(search, 500);
+	const { isFavorite, toggleFavorites } = useFavorites();
+
+	const {
+		data: pokemonList,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
+	} = usePokemonList();
+	const names = pokemonList?.pages.flatMap(page =>
+		page.results.map((result: PokemonListItem) => result.name)
+	);
+	const { data: pokemon } = usePokemonDetails(names ?? []);
+	const { data: typesList } = usePokemonType();
+
+	const types = typesList?.results.map((type: { name: string }) => type.name);
+
+	const filteredPokemon = filterPokemon(
+		pokemon ?? [],
+		debouncedSearch,
+		selectedTypes
+	);
+
+	function handelToggleType(type: string) {
+		setSelectedTypes(prev =>
+			prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
+		);
+	}
+
+	return (
+		<main className='max-w-6xl mx-auto py-6'>
+			<SearchInput value={search} onChange={setSearch} />
+
+			<TypeFilter
+				types={types ?? []}
+				selected={selectedTypes}
+				onToggle={handelToggleType}
+			/>
+
+			<section className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3'>
+				{filteredPokemon.map(pokemon => (
+					<PokemonCard
+						key={pokemon.id}
+						pokemon={pokemon}
+						onClick={setSelectedPokemon}
+						isFavorite={isFavorite(pokemon.id)}
+						onToggleFavorite={toggleFavorites}
+					/>
+				))}
+			</section>
+
+			{hasNextPage && (
+				<LoadMoreBtn
+					onClick={() => fetchNextPage()}
+					isLoading={isFetchingNextPage}
+				/>
+			)}
+
+			<PokemonModal
+				pokemon={selectedPokemon}
+				onClose={() => setSelectedPokemon(null)}
+			/>
+		</main>
+	);
+}

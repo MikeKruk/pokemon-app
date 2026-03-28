@@ -1,13 +1,21 @@
+import { Star } from 'lucide-react';
 import { getCardBackground } from '../../lib/utils';
 import type { Pokemon } from '../../types/pokemon';
 import { Badge } from '../ui/badge';
-import { Card, CardContent } from '../ui/card';
+import { Card, CardContent, CardHeader } from '../ui/card';
 
 interface PokemonProps {
 	pokemon: Pokemon;
 	onClick: (pokemon: Pokemon) => void;
+	isFavorite: boolean;
+	onToggleFavorite: (pokemon: Pokemon) => void;
 }
-export default function PokemonCard({ pokemon, onClick }: PokemonProps) {
+export default function PokemonCard({
+	pokemon,
+	onClick,
+	isFavorite,
+	onToggleFavorite,
+}: PokemonProps) {
 	const types = pokemon.types.map(type => type.type.name);
 	const background = getCardBackground(types);
 	const num = String(pokemon.id).padStart(3, '0');
@@ -23,6 +31,17 @@ export default function PokemonCard({ pokemon, onClick }: PokemonProps) {
       '
 			style={{ background }}
 		>
+			<CardHeader>
+				<Star
+					onClick={e => {
+						e.stopPropagation();
+						onToggleFavorite(pokemon);
+					}}
+					className={`w-6 h-6 transition-colors ${
+						isFavorite ? 'text-yellow-400 fill-yellow-400' : ''
+					}`}
+				/>
+			</CardHeader>
 			<CardContent className='flex flex-col items-center gap-2 p-4'>
 				<img
 					src={image}

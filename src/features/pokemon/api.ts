@@ -1,6 +1,6 @@
-import { BASE_URL_API } from '../../constants/constants';
+import { BASE_URL_API, MAX_LIMIT } from '../../constants/constants';
 
-export async function getPokemonList(limit = 24, offset = 0) {
+export async function getPokemonList(limit = MAX_LIMIT, offset = 0) {
 	const response = await fetch(
 		`${BASE_URL_API}/pokemon/?limit=${limit}&offset=${offset}`
 	);
