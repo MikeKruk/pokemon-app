@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Header from './components/layout/Header';
+import LoadMoreBtn from './components/layout/LoadMoreBtn';
 import PokemonCard from './components/layout/PokemonCard';
 import SearchInput from './components/layout/SearchInput';
 import TypeFilter from './components/layout/TypeFilter';
@@ -15,7 +16,12 @@ function App() {
 	const [search, setSearch] = useState<string>('');
 	const debouncedSearch = useDebounce(search, 500);
 
-	const { data: pokemonList } = usePokemonList();
+	const {
+		data: pokemonList,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
+	} = usePokemonList();
 	const names = pokemonList?.pages.flatMap(page =>
 		page.results.map((result: PokemonListItem) => result.name)
 	);
@@ -57,6 +63,13 @@ function App() {
 						/>
 					))}
 				</section>
+
+				{hasNextPage && (
+					<LoadMoreBtn
+						onClick={() => fetchNextPage()}
+						isLoading={isFetchingNextPage}
+					/>
+				)}
 			</main>
 		</div>
 	);
