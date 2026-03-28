@@ -19,7 +19,7 @@ export default function PokemonCard({ pokemon, onClick }: PokemonProps) {
 			aria-label={pokemon.name}
 			onClick={() => onClick(pokemon)}
 			className='
-      overflow-hidden border-0 cursor-pointer transition-transform duration-300 
+      mb-4 overflow-hidden border-0 cursor-pointer transition-transform duration-300 
       hover:scale-105 hover:brightness-110
       '
 			style={{ background }}
