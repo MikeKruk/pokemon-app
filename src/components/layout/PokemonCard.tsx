@@ -42,6 +42,7 @@ export default function PokemonCard({ pokemon, onClick }: PokemonProps) {
                 key={type}
                 role='listitem'
                 variant='outline'
+                className='border-0 bg-gray-200/20'
               >
                 {type}
               </Badge>

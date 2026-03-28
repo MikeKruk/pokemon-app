@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { getPokemonList } from '../api';
 
-export function usePokemon() {
+export default function usePokemonList() {
 	return useInfiniteQuery({
 		queryKey: ['pokemon-list'],
 		queryFn: ({ pageParam }) => getPokemonList(24, pageParam),
