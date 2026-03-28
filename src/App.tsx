@@ -1,13 +1,11 @@
+import Header from './components/layout/Header';
+
 function App() {
 	return (
-    <div className='min-h-screen text-white'>
-      <header className='sticky top-0 z-50 '>
-        <div>
-
-        </div>
-      </header>
-    </div>
-  )
+		<div className='min-h-screen text-white'>
+			<Header />
+		</div>
+	);
 }
 
 export default App;
