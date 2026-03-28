@@ -14,3 +14,16 @@ export function getCardBackground(types: string[]): string {
 		? `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`
 		: primaryColor;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function getEvolutions(evolutionInfo: any) {
+	const names = [];
+	let current = evolutionInfo?.chain;
+
+	while (current) {
+		names.push(current.species.name);
+		current = current.evolves_to[0];
+	}
+
+	return names;
+}
