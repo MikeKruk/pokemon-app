@@ -26,3 +26,10 @@ export interface PokemonListResponse {
 	next: string;
 	results: PokemonListItem[];
 }
+
+export interface PokemonLocation {
+	location_area: {
+		name: string;
+		url: string;
+	};
+}

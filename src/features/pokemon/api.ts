@@ -9,9 +9,7 @@ export async function getPokemonList(limit = 24, offset = 0) {
 }
 
 export async function getPokemonByName(name: string) {
-  const response = await fetch(
-		`${BASE_URL_API}/pokemon/${name}`
-	);
+	const response = await fetch(`${BASE_URL_API}/pokemon/${name}`);
 	if (!response.ok) throw new Error(`Failed to get pokemon ${name}`);
 	return response.json();
 }
@@ -22,8 +20,20 @@ export async function getAllTypes() {
 	return response.json();
 }
 
-export async function getPokemonByType(type: string) {
-	const response = await fetch(`${BASE_URL_API}/type/${type}`);
-	if (!response.ok) throw new Error(`Failed to get pokemon by type: ${type}`);
+export async function getPokemonSpecies(name: string) {
+	const response = await fetch(`${BASE_URL_API}/pokemon-species/${name}`);
+	if (!response.ok) throw new Error(`Failed to get pokemon species ${name}`);
+	return response.json();
+}
+
+export async function getEvolutionChain(url: string) {
+	const response = await fetch(url);
+	if (!response.ok) throw new Error('Failed to get evolution chain');
+	return response.json();
+}
+
+export async function getPokemonLocation(id: number) {
+	const response = await fetch(`${BASE_URL_API}/pokemon/${id}/encounters`);
+	if (!response.ok) throw new Error(`Failed to get location ${id}`);
 	return response.json();
 }

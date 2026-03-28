@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Header from './components/layout/Header';
 import LoadMoreBtn from './components/layout/LoadMoreBtn';
 import PokemonCard from './components/layout/PokemonCard';
+import PokemonModal from './components/layout/PokemonModal';
 import SearchInput from './components/layout/SearchInput';
 import TypeFilter from './components/layout/TypeFilter';
 import usePokemonDetails from './features/pokemon/hooks/usePokemonDetails';
@@ -9,10 +10,11 @@ import usePokemonList from './features/pokemon/hooks/usePokemonList';
 import usePokemonType from './features/pokemon/hooks/usePokemonType';
 import useDebounce from './hooks/useDebounce';
 import filterPokemon from './lib/filter-pokemon';
-import type { PokemonListItem } from './types/pokemon';
+import type { Pokemon, PokemonListItem } from './types/pokemon';
 
 function App() {
 	const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+	const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null);
 	const [search, setSearch] = useState<string>('');
 	const debouncedSearch = useDebounce(search, 500);
 
@@ -59,7 +61,7 @@ function App() {
 						<PokemonCard
 							key={pokemon.id}
 							pokemon={pokemon}
-							onClick={() => {}}
+							onClick={setSelectedPokemon}
 						/>
 					))}
 				</section>
@@ -70,6 +72,11 @@ function App() {
 						isLoading={isFetchingNextPage}
 					/>
 				)}
+
+				<PokemonModal
+					pokemon={selectedPokemon}
+					onClose={() => setSelectedPokemon(null)}
+				/>
 			</main>
 		</div>
 	);

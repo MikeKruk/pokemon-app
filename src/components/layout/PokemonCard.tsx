@@ -1,4 +1,3 @@
-
 import { getCardBackground } from '../../lib/utils';
 import type { Pokemon } from '../../types/pokemon';
 import { Badge } from '../ui/badge';
@@ -31,24 +30,24 @@ export default function PokemonCard({ pokemon, onClick }: PokemonProps) {
 					width={100}
 					height={100}
 					loading='lazy'
-          className='w-24 h-24 object-contain drop-shadow-lg'
+					className='w-24 h-24 object-contain drop-shadow-lg'
 				/>
-        <h2 className='text-white font-bold text-lg '>{pokemon.name}</h2>
-        <p className='text-white/60 text-sm font-medium'>#{num}</p>
-        <div role='list' className='flex gap-2 flex-wrap justify-center'>
-          {
-            types.map(type => (
-              <Badge
-                key={type}
-                role='listitem'
-                variant='outline'
-                className='border-0 bg-gray-200/20'
-              >
-                {type}
-              </Badge>
-            ))
-          }
-        </div>
+				<h2 className='text-white font-bold text-lg capitalize'>
+					{pokemon.name}
+				</h2>
+				<p className='text-white/60 text-sm font-medium'>#{num}</p>
+				<div role='list' className='flex gap-2 flex-wrap justify-center'>
+					{types.map(type => (
+						<Badge
+							key={type}
+							role='listitem'
+							variant='outline'
+							className='border-0 bg-gray-200/20'
+						>
+							{type}
+						</Badge>
+					))}
+				</div>
 			</CardContent>
 		</Card>
 	);
